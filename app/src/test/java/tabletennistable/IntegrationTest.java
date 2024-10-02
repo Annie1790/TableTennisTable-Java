@@ -1,25 +1,25 @@
 package tabletennistable;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class IntegrationTest {
 
     App app;
     League league;
+    LeagueRenderer leagueRenderer;
+    FileService fileService;
+    String name = "testname";
 
     @BeforeEach
     void setup() {
-        league = new Leauge();
-
-        app = new App(new League(), new LeagueRenderer(), new FileService());
+        league = new League();
+        fileService = new FileService();
+        leagueRenderer = new LeagueRenderer();
+        app = new App(league, leagueRenderer, fileService);
 
     }
     @Test
@@ -29,43 +29,50 @@ public class IntegrationTest {
     
     @Test
     public void shouldPrintUnknownCommand() {
-        final String COMMAND = "random command";
+        final String command = "random command";
 
-        Assertions.assertEquals("Unknown command: " + command, app.sendCommand(COMMAND));
+        Assertions.assertEquals("Unknown command: " + command, app.sendCommand(command));
+    }
+
+    @Test
+    public void shouldSaveLeague() {
+        String player = "testplayer";
+
+        league.addPlayer(player);
+        fileService.save(name, league);
+
+        assertThat(league.getRows().size()).isEqualTo(1);
     }
 
     @Test
     public void shouldLoadLeague_IfLeagueIsAlreadySaved() {
+        String player = "testplayer";
 
+        league.addPlayer(player);
+        fileService.save(name, league);
+
+        assertThat(league)
+                .usingRecursiveComparison()
+                .isEqualTo(fileService.load(name));
     }
 
     @Test
     public void shouldThrowException_WhenLoading_AndLeagueIsNotSaved() {
-
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () ->league = fileService.load(name));
     }
-
     @Test
-    void shouldExitGame_IfUserNoLongerPlays() throws FileNotFoundException {
-        // https://stackoverflow.com/questions/36349827/testing-main-method-by-junit
-        final String COMMAND = "quit";
-        boolean isGameActive = true;
-        String[] args = null;
-        final InputStream original = System.in;
-        final FileInputStream inputStream = new FileInputStream(new File("tabletennistable/Main.java"));
-        System.setIn(inputStream);
-        Main.main(args);
-        System.setIn(original);
+    void shouldCharlieWinGame() {
+        String charlie = "Charlie";
+        String bob = "Bob";
+        String sam = "Sam";
 
+        league.addPlayer(bob);
+        league.addPlayer(sam);
+        league.addPlayer(charlie);
 
-    }
+        league.recordWin(charlie, bob);
 
-    @Test
-    void shouldPlayer1Win() {
-
-    }
-
-    @Test
-    void shouldPlayer1Lose() {
-
+        assertThat(league.getWinner()).isEqualTo(charlie);
     }
 }
