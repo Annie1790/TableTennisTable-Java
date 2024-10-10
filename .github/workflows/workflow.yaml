@@ -33,7 +33,7 @@ jobs:
 
       - name: Build production image
         run: |
-          docker build --target prod --tag image:prod
+          docker build --target prod --tag image:prod .
 
       - name: Login to Docker
         run: |
