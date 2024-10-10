@@ -10,4 +10,4 @@ FROM base AS prod
 ENTRYPOINT ./gradlew run --console=plain
 
 FROM base AS test
-ENTRYPOINT ./gradlew test
+ENTRYPOINT ./gradlew test --console=plain
