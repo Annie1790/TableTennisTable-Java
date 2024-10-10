@@ -5,6 +5,8 @@ on:
   push:
     branches: [ "main" ]
   pull_request:
+    paths-ignore:
+      - 'README.md'
     branches: [ "main" ]
 jobs:
   build:
@@ -28,3 +30,18 @@ jobs:
         if: success()
         run : |
           docker run image:test
+
+      - name: Build production image
+        run: |
+          docker build --target prod --tage image:prod
+
+      - name: Login to Docker
+        run: |
+          docker login -u username p password
+        with:
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.TOKEN }}
+
+      - name: Push image to artifactory
+        run: |
+          docker push image:prod
