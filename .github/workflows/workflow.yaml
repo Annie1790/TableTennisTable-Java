@@ -22,7 +22,7 @@ jobs:
 
       - name: Build docker image test
         run : | 
-          docker build --target test --tag image:test
+          docker build --target test --tag image:test .
 
       - name: Run tests
         if: success()
@@ -31,7 +31,7 @@ jobs:
 
       - name: Build docker image production
         run : |
-          docker build --target prod --tage image:prod
+          docker build --target prod --tage image:prod .
 
       - name: Run production
         run: |
