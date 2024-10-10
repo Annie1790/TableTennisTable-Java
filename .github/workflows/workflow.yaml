@@ -35,4 +35,4 @@ jobs:
 
       - name: Run production
         run: |
-          docker run image:prod
+          docker run -it image:prod
