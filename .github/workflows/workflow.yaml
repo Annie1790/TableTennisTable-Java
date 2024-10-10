@@ -28,11 +28,3 @@ jobs:
         if: success()
         run : |
           docker run image:test
-
-      - name: Build docker image production
-        run : |
-          docker build --target prod --tag image:prod .
-
-      - name: Run production
-        run: |
-          docker run -it image:prod
