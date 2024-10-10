@@ -1,8 +1,14 @@
 package tabletennistable;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -20,7 +26,12 @@ public class IntegrationTest {
         fileService = new FileService();
         leagueRenderer = new LeagueRenderer();
         app = new App(league, leagueRenderer, fileService);
+    }
 
+    @AfterEach
+    void deleteFile() throws IOException {
+        Path file = Paths.get("./testname");
+        boolean result = Files.deleteIfExists(file);
     }
     @Test
     public void testPrintsEmptyGame() {
